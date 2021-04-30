@@ -10,7 +10,18 @@ Windows:
 ```
 Unix / MacOS:
 ```
-source .venv/bin/activate
+source .venv/Scripts/activate
+```
+
+## Simulation starten
+```
+python sim.py
+```
+
+oder
+
+```
+python3 sim.py
 ```
 
 ## p5 Installation:
