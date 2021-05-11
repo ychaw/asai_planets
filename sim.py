@@ -8,7 +8,8 @@ from orbitalsim.environment import OrbitalSystem
 
 sim_entities = [
     {
-        'name': 'sun',
+        'name': 'Sun',
+        'color': (245, 236, 111),
         'position': (0, 0),
         'mass': 1.9884e30,
         'speed': 0,
@@ -18,7 +19,8 @@ sim_entities = [
         'a': 0
     },
     {
-        'name': 'mercury',
+        'name': 'Mercury',
+        'color': (155, 154, 142),
         'position': (0.3590961172798053, -0.04164522874752517),
         'mass': 3.285e23,
         'speed': 0.029287836754110234,
@@ -28,7 +30,8 @@ sim_entities = [
         'a': 0.3870993130750688
     },
     {
-        'name': 'venus',
+        'name': 'Venus',
+        'color': (237, 200, 132),
         'position': (0.5127350527183985, -0.5158182472028876),
         'mass': 4.867e24,
         'speed': 0.02008004590994939,
@@ -38,7 +41,8 @@ sim_entities = [
         'a': 0.7233300921935613
     },
     {
-        'name': 'earth',
+        'name': 'Earth',
+        'color': (95, 135, 195),
         'position': (0.97941231066402, 0.2024447197289333),
         'mass': 5.972e24,
         'speed': 0.017200221950579502,
@@ -51,7 +55,7 @@ sim_entities = [
 
 
 class Simulation():
-    def __init__(self, sim_rate=3, start_date=None):
+    def __init__(self, start_date=None):
 
         if start_date:
             self.date = datetime.datetime.strptime(start_date, '%Y-%m-%d')
@@ -61,12 +65,7 @@ class Simulation():
         # initialise the Orbital System object
         self.solar_system = OrbitalSystem()
 
-        self.sim_rate = sim_rate
         self.running = False
-
-    """
-    Adding entities to simulation
-    """
 
     def add_custom_entity(
         self,
@@ -93,22 +92,6 @@ class Simulation():
 
         self.solar_system.add_entity(
             position=position,
-            speed=speed,
-            angle=angle,
-            mass=mass,
-            diameter=diameter,
-            e=e,
-            a=a,
-            name=name
-        )
-
-    def add_horizons_entity(self, entity_id, observer_id, mass, diameter=1e-5):
-        # entity_id, observer_id: the numerical ids designated by JPL SSD Horizons
-        x, y, speed, angle, e, a, name = self.get_horizons_positioning(
-            entity_id, observer_id)
-
-        self.solar_system.add_entity(
-            position=(x, y),
             speed=speed,
             angle=angle,
             mass=mass,
@@ -169,18 +152,12 @@ class Simulation():
 
     def check_if_still_stable(self):
         for ent in self.solar_system.entities:
-            print(ent.days_per_update())
             print(ent.name, ent.x, ent.y)
         print()
 
     def start(self):
         start = time.time()
         simulation_period = 0.01
-
-        delta_t = 1
-
-        for entity in self.solar_system.entities:
-            entity.sim_rate = self.sim_rate
 
         self.running = True
 
@@ -190,14 +167,16 @@ class Simulation():
                 self.running = False
                 break
 
+            self.solar_system.update()
             self.check_if_still_stable()
-            self.solar_system.update(delta_t)
+
 
 
 def main():
-    s = Simulation(sim_rate=1000, start_date='2021-10-05')
+    s = Simulation()
 
     # produces above numbers (sim_entities)
+    # s.date = datetime.datetime.strptime('2021-10-05', '%Y-%m-%d')
     # s.get_all_horizons()
 
     for ent in sim_entities:
