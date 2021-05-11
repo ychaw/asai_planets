@@ -35,6 +35,18 @@ oder
 python3 sim.py
 ```
 
+
+## Visualisierung
+| Key(s)    | Action(s)                                          |
+|-----------|----------------------------------------------------|
+| `SPACE`   | Pause/play simulation                              |
+| `↑ ↓ ← ↑` | Move window view; pan about                        |
+| `+/-`     | Zoom in and out respectively                       |
+| `r`       | Reset zoom and position                            |
+| `l`       | Toggle labels on the entities                      |
+| `h`       | Toggle history paths on the entities               |
+| `q`       | Quit the simulation                                |
+
 ## Inspiration
 - https://github.com/ModMaamari/reinforcement-learning-using-python
 - https://github.com/akuchling/50-examples/blob/master/gravity.rst
