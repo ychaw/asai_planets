@@ -1,8 +1,5 @@
 import math
-import datetime
 import time
-from astroquery.jplhorizons import Horizons
-from astropy.time import Time
 
 from orbitalsim.environment import OrbitalSystem
 
@@ -55,12 +52,7 @@ sim_entities = [
 
 
 class Simulation():
-    def __init__(self, start_date=None):
-
-        if start_date:
-            self.date = datetime.datetime.strptime(start_date, '%Y-%m-%d')
-        else:
-            self.date = datetime.datetime.today()
+    def __init__(self):
 
         # initialise the Orbital System object
         self.solar_system = OrbitalSystem()
@@ -101,51 +93,6 @@ class Simulation():
             name=name
         )
 
-    def get_horizons_positioning(self, entity_id, observer_id):
-        obj = Horizons(
-            id=entity_id,
-            location='@{}'.format(observer_id),
-            epochs=Time(self.date).jd,
-            id_type='id'
-        )
-
-        if not entity_id == observer_id:
-            vectors = obj.vectors()
-            elements = obj.elements()
-
-            # get the eccentricity (e) and semimajor axis (a)
-            e = elements['e'].data[0]
-            a = elements['a'].data[0]
-            name = elements['targetname'].data[0].replace('Barycenter ', '')
-
-            # get the components of position and velocity from JPL SSD
-            x, y = vectors['x'], vectors['y']
-            vx, vy = vectors['vx'], vectors['vy']
-            speed = math.hypot(vx, vy)
-
-            # calculate angle of velocity by finding the tangent to the orbit
-            # pygame specific: horizontally reflect the angle due to reversed y-axis
-            angle = math.pi - ((2 * math.pi) - math.atan2(y, x))
-
-            return x, y, speed, angle, e, a, name
-        else:
-            # special case for the central body of a system (e.g. the sun)
-            # obj.elements() does not work for when entity_id and observer_id are the same
-            name = obj.vectors()['targetname'].data[0].replace(
-                'Barycenter ', '')
-            return 0, 0, 0, 0, 0, 0, name
-
-    def get_all_horizons(self):
-        print()
-        print(self.get_horizons_positioning('sun', 'sun'))
-        print()
-        print(self.get_horizons_positioning('1', 'sun'))
-        print()
-        print(self.get_horizons_positioning('2', 'sun'))
-        print()
-        print(self.get_horizons_positioning('3', 'sun'))
-        print()
-
     """
     Main simulation function
     """
@@ -171,13 +118,8 @@ class Simulation():
             self.check_if_still_stable()
 
 
-
 def main():
     s = Simulation()
-
-    # produces above numbers (sim_entities)
-    # s.date = datetime.datetime.strptime('2021-10-05', '%Y-%m-%d')
-    # s.get_all_horizons()
 
     for ent in sim_entities:
         s.add_custom_entity(

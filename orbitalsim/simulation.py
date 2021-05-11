@@ -47,7 +47,7 @@ class Simulation():
         self.show_labels = True
         self.show_history = True
         self.running = False
-        self.paused = False
+        self.paused = True
 
         self.histories = []
 
