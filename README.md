@@ -13,6 +13,17 @@ Unix / MacOS:
 source .venv/Scripts/activate
 ```
 
+## Visualisierung starten
+```
+python vis.py
+```
+
+oder
+
+```
+python3 vis.py
+```
+
 ## Simulation starten
 ```
 python sim.py
@@ -22,14 +33,6 @@ oder
 
 ```
 python3 sim.py
-```
-
-## p5 Installation:
-https://p5.readthedocs.io/en/latest/install.html
-
-## Start des Jupyter Notebooks im Terminal oder in der Kommandozeile:
-```
-jupyter notebook
 ```
 
 ## Inspiration
