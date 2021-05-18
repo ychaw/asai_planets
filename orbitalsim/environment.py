@@ -28,7 +28,6 @@ class OrbitalSystem():
     def update(self):
         for i, entity in enumerate(self.entities):
             entity.move()
-            entity.accelerate((0, 0))
 
             for entity2 in self.entities[i + 1:]:
                 entity.attract(entity2)

@@ -71,7 +71,7 @@ def main():
         color=(255, 0, 0),
         position=(0.6, 0.6),
         mass=3e27,
-        speed=-0.01,
+        speed=0.008,
         angle=4
     )
     

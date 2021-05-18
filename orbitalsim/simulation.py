@@ -182,7 +182,6 @@ class Simulation():
             flag = 0
         self.window = pygame.display.set_mode((self.width, self.height), flag)
         pygame.display.set_caption('Orbital Simulation')
-        delta_t = 16
 
         # calculate the largest semi-major axis and calculates scale if applicable
         semimajor_axes = []
@@ -245,6 +244,5 @@ class Simulation():
                     self.window.blit(text, position)
 
             pygame.display.flip()
-
             # delta_t hat zwar in der Simulation keine Auswirkung (mehr), ist aber gut für die Visualisierung
-            delta_t = clock.tick(60)
+            clock.tick(60)

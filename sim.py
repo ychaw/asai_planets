@@ -1,7 +1,10 @@
 import math
-import time
+import numpy as np
 
 from orbitalsim.environment import OrbitalSystem
+
+# G * M of sun
+std_grav_param = 1.32712440018e20
 
 sim_entities = [
     {
@@ -58,6 +61,7 @@ class Simulation():
         self.solar_system = OrbitalSystem()
 
         self.running = False
+        self.sgp = 0
 
     def add_custom_entity(
         self,
@@ -98,27 +102,59 @@ class Simulation():
     """
 
     def check_if_still_stable(self):
-        for ent in self.solar_system.entities:
-            print(ent.name, ent.x, ent.y)
-        print()
 
-    def start(self):
-        start = time.time()
-        simulation_period = 0.01
+        # a = orbit's semi-major axis
+        # G = gravitational constant G.to('AU3 / (kg d2)').value
+        # M = mass of sun
+        # r = radius of orbit
+
+        # T = 2 * π * √( a**3 / (G * M) )   orbital period
+
+        # v_1 = 2 * π * r / T
+        # v_2 = √( G*M / r )
+
+        # wenn v_1 > v_2 => zu schnell
+        # wenn v_1 < v_2 => zu langsam
+
+        # Abstand von v_1 zu v_2 könnte ein Maß der Stabilität sein
+
+        dist = []
+
+        for ent in self.solar_system.entities:
+            if ent.name != sim_entities[0]['name']:
+                a = math.hypot(ent.x, ent.y)
+                r = math.hypot(ent.x + self.solar_system.entities[0].x, ent.y - self.solar_system.entities[0].y)
+                period = 2 * math.pi * math.sqrt(a**3 / std_grav_param)
+                v_1 = 2 * math.pi * r / period
+                v_2 = math.sqrt(std_grav_param / r)
+                dist.append(abs(v_1 - v_2))
+
+        return dist
+
+    def start(self, max_runs):
 
         self.running = True
+        run = 0
+
+        fitness = []
 
         while self.running:
 
-            if time.time() > start + simulation_period:
-                self.running = False
-                break
-
             self.solar_system.update()
-            self.check_if_still_stable()
+
+            # entweder alle x durchläufe oder einmal am ende
+            if run > 0 and run % 100 == 0:
+                fitness.append(self.check_if_still_stable())
+
+            if run >= max_runs - 1:
+                self.running = False
+            run += 1
+
+        data = np.array(fitness).transpose()
+        print(np.nanmean((data[:, 1:]/data[:, :-1]), axis=1) - 1)
 
 
-def main():
+def main(runs, custom):
     s = Simulation()
 
     for ent in sim_entities:
@@ -132,9 +168,18 @@ def main():
             a=ent['a'],
             name=ent['name']
         )
+    if custom:
+        s.add_custom_entity(
+            name='Custom',
+            position=(0.6, 0.6),
+            mass=3e27,
+            speed=0.008,
+            angle=4
+        )
 
-    s.start()
+    s.start(runs)
 
 
 if __name__ == '__main__':
-    main()
+    main(1000, False)
+    main(1000, True)

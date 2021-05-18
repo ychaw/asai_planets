@@ -57,10 +57,8 @@ class Entity():
         self.y -= math.cos(self.angle) * self.speed  # subtract because of pygame's coord system
 
     def accelerate(self, acceleration):
-        # adjusts magnitude of acceleration for days past per frame
         # combine apply acceleration to velocity vector
-        acc_mag, acc_angle = acceleration
-        self.speed, self.angle = add_vectors((self.speed, self.angle), (acc_mag, acc_angle))
+        self.speed, self.angle = add_vectors((self.speed, self.angle), acceleration)
 
     def attract(self, other):
         dx = self.x - other.x
