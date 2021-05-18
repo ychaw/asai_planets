@@ -142,7 +142,7 @@ class Simulation():
                 self.scroll(dy=-30)
             elif event.key == pygame.K_MINUS:
                 self.zoom(0.667)
-            elif event.key == pygame.K_EQUALS:
+            elif event.key == pygame.K_PLUS:
                 self.zoom(1.5)
             elif event.key == pygame.K_r:
                 self.reset_zoom()
