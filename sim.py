@@ -193,7 +193,7 @@ class Simulation():
         return np_sum(diff)
 
 
-def simulate_orbital_system(max_runs:int=1000, collision_dist:float=0.001, stability_cutoff:float=3, custom_entity:dict=None):
+def simulate_orbital_system(max_runs: int = 1000, collision_dist: float = 0.001, stability_cutoff: float = 3, custom_entity: dict = None):
     '''
     Simulation of the inner four planets of our solar system (Sun, Mercury, Venus, Earth) with an optional added custom planet.
 
@@ -232,7 +232,7 @@ def simulate_orbital_system(max_runs:int=1000, collision_dist:float=0.001, stabi
 
     # score comes in the range of 0 (best possible outcome) to inf (worst outcome)
     # here we cap the score to a maximum value of 5
-    score = min(score, stability_cutoff)
+    score = max(0, min(score, stability_cutoff))
 
     # lerping score so that the minimum value (worst) is 0 and the maximum value (best) is 1
     score = score / stability_cutoff * -1 + 1
@@ -246,10 +246,10 @@ if __name__ == '__main__':
     collision_dist = 0.001
     stability_cutoff = 3
     custom_entity = {
-        'position': (1., 1.),
-        'mass': 3.e26,
+        'position': (1, 0.5),
+        'mass': 3e24,
         'speed': 0.014,
-        'angle': 4.
+        'angle': 4
     }
     start = time.time()
 

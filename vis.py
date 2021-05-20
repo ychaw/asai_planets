@@ -67,8 +67,8 @@ def main(runs, stable):
     s.add_custom_entity(
         name='Custom',
         color=(255, 0, 0),
-        position=(1, 1),
-        mass=3e26,
+        position=(1, 0.5),
+        mass=3e24,
         speed=0.014,
         angle=4
     )
