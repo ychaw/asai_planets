@@ -16,7 +16,8 @@ class Simulation():
         scale=-1,
         entity_scale=10,
         start_date=None,
-        fullscreen=False
+        fullscreen=False,
+        max_runs=1000
     ):
         # dimensions: (width, height) of the window in pixels
         # scale: magnification ratio between AU and displayed pixels (default of -1: automatically calculated by self.set_scale())
@@ -48,6 +49,7 @@ class Simulation():
         self.show_history = True
         self.running = False
         self.paused = True
+        self.max_runs = max_runs
 
         self.histories = []
 
@@ -194,6 +196,7 @@ class Simulation():
         font = pygame.font.Font(font_dir, 14)
         clock = pygame.time.Clock()
         self.running = True
+        run = 0
 
         """
         Simulation loop
@@ -212,8 +215,8 @@ class Simulation():
 
             if self.show_history:
                 for i, ent_history in enumerate(self.histories):
-                    for hist in ent_history[1:]:
-                        pygame.draw.line(self.window, self.solar_system.entities[i].color, hist, ent_history[ent_history.index(hist)-1])
+                    for j,  hist in enumerate(ent_history[1:]):
+                        pygame.draw.line(self.window, self.solar_system.entities[i].color, hist, ent_history[j])
 
             entity_labels = []
             for i, entity in enumerate(self.solar_system.entities):
@@ -243,6 +246,12 @@ class Simulation():
                     text, position = label
                     self.window.blit(text, position)
 
+            c = (255, 0 if run > self.max_runs else 255, 0 if run > self.max_runs else 255)
+            self.window.blit(font.render(str(run), False, c), (10, 10))
+
             pygame.display.flip()
+
+            run += 1 if not self.paused else 0
+
             # delta_t hat zwar in der Simulation keine Auswirkung (mehr), ist aber gut für die Visualisierung
             clock.tick(60)

@@ -1,6 +1,6 @@
 from orbitalsim import simulation
 
-sim_entities = [
+SIM_ENTITIES = [
     {
         'name': 'Sun',
         'color': (245, 236, 111),
@@ -38,7 +38,7 @@ sim_entities = [
         'name': 'Earth',
         'color': (95, 135, 195),
         'position': (0.97941231066402, 0.2024447197289333),
-        'mass': 5.972e24,
+        'mass': 5.972e24 + 7.342e22,
         'speed': 0.017200221950579502,
         'angle': -2.9377629737585336,
         'diameter': 8.5175009e-5,
@@ -48,12 +48,10 @@ sim_entities = [
 ]
 
 
-def main():
-    s = simulation.Simulation(
-        dimensions=(1000, 1000)
-    )
+def main(runs, stable):
+    s = simulation.Simulation(dimensions=(1000, 1000), max_runs=runs)
 
-    for ent in sim_entities:
+    for ent in SIM_ENTITIES:
         s.add_custom_entity(
             position=ent['position'],
             mass=ent['mass'],
@@ -65,18 +63,19 @@ def main():
             name=ent['name'],
             color=ent['color']
         )
-    
+
     s.add_custom_entity(
         name='Custom',
         color=(255, 0, 0),
-        position=(0.6, 0.6),
-        mass=3e27,
-        speed=0.008,
+        position=(1, 1),
+        mass=3e26,
+        speed=0.014,
         angle=4
     )
-    
+
     s.start()
 
 
 if __name__ == '__main__':
-    main()
+
+    main(1000, False)
