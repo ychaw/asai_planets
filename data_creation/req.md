@@ -3,7 +3,7 @@
 - chunk search space
   - rect with 2 points as format -> filename: x1-y1_x2-y2.csv?
   - constant resolution over entire search space
-- app should use args x1, Y1, x2, y2 for search space
+- app should use args x1, y1, x2, y2 for search space
 - CSV rows should look like: X, Y, M, O
 
 ## Parameters
@@ -54,7 +54,7 @@ with open('eggs.csv', 'w', newline='') as csvfile:
 import concurrent.futures
 
 with concurrent.futures.ProcessPoolExecutor() as executor:
-    results = [exectutor.submit(do_something, args) for _ in range(10)]
+    results = [executor.submit(do_something, args) for _ in range(10)]
 
     for f in concurrent.futures.as_completed(results):
         pass

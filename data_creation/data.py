@@ -14,13 +14,19 @@ import os
 #
 
 # Total search space, rectangle with (x1, y1, x2, y2)
+# TODO: has to work with following coordinates: [-0.4, -1.1, 0.4, -0.3]
 T = [1, 1, 100, 100]
+
 # Search space resolution, where smaller means finer
 # Values < 1 are not supported (yet)
 res = 1
+
 # Set of masses to test
-M = [1, 2, 3]
-OUT = './output/'
+M = [7e23, 5e25, 3e27]
+
+# Path to output folder
+OUT = os.path.join(os.path.abspath(os.getcwd()), 'data_creation', 'output')
+
 # Chunk count
 chunk_count_per_dim = 33
 # Estimate for one simulation run in seconds
@@ -127,7 +133,7 @@ if __name__ == '__main__':
     ###########################################################################
     # Write data
 
-    file_name = f'{OUT}{T[0]}_{T[1]}-{T[2]}_{T[3]}.csv'
+    file_name = os.path.join(OUT, f'{T[0]}_{T[1]}-{T[2]}_{T[3]}.csv')
 
     with open(file_name, 'w', newline='') as csvfile:
         writer = csv.writer(csvfile, delimiter=',',

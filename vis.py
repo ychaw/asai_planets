@@ -54,7 +54,7 @@ def main(runs):
         # x1, y1, x2, y2 of simulation space
         [-0.4, -1.1, 0.4, -0.3],
         # masses that where trained
-        [6e22, 5e23, 4e24, 3e25, 2e26, 1e27]
+        [7e23, 5e25, 3e27]
     )
 
     s = simulation.Simulation(dimensions=(1000, 1000), max_runs=runs, sim_space=sim_space)
