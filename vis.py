@@ -48,8 +48,16 @@ SIM_ENTITIES = [
 ]
 
 
-def main(runs, stable):
-    s = simulation.Simulation(dimensions=(1000, 1000), max_runs=runs)
+def main(runs):
+
+    sim_space = (
+        # x1, y1, x2, y2 of simulation space
+        [-0.4, -1.1, 0.4, -0.3],
+        # masses that where trained
+        [6e22, 5e23, 4e24, 3e25, 2e26, 1e27]
+    )
+
+    s = simulation.Simulation(dimensions=(1000, 1000), max_runs=runs, sim_space=sim_space)
 
     for ent in SIM_ENTITIES:
         s.add_custom_entity(
@@ -64,6 +72,7 @@ def main(runs, stable):
             color=ent['color']
         )
 
+    '''
     s.add_custom_entity(
         name='Custom',
         color=(255, 0, 0),
@@ -72,10 +81,11 @@ def main(runs, stable):
         speed=0.014,
         angle=4
     )
+    '''
 
     s.start()
 
 
 if __name__ == '__main__':
 
-    main(1000, False)
+    main(1000)

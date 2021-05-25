@@ -15,9 +15,9 @@ class Simulation():
         dimensions=(800, 800),
         scale=-1,
         entity_scale=10,
-        start_date=None,
         fullscreen=False,
-        max_runs=1000
+        max_runs=1000,
+        sim_space=None
     ):
         # dimensions: (width, height) of the window in pixels
         # scale: magnification ratio between AU and displayed pixels (default of -1: automatically calculated by self.set_scale())
@@ -36,20 +36,18 @@ class Simulation():
         self.scale = scale
         self.entity_scale = entity_scale
 
-        if start_date:
-            self.date = datetime.datetime.strptime(start_date, '%Y-%m-%d')
-        else:
-            self.date = datetime.datetime.today()
-
         # initialise the Orbital System object
         self.solar_system = OrbitalSystem()
 
         self.fullscreen = fullscreen
         self.show_labels = True
         self.show_history = True
+        self.show_sim_space = False
         self.running = False
         self.paused = True
         self.max_runs = max_runs
+
+        self.sim_space = sim_space
 
         self.histories = []
 
@@ -62,16 +60,19 @@ class Simulation():
         relative_scale = self.scale / self.default_scale
         self.dx += dx / relative_scale
         self.dy += dy / relative_scale
+        self.clear_history()
 
     def zoom(self, zoom):
         # adjust zoom level and zoom offset
         self.scale *= zoom
+        self.clear_history()
 
     def reset_zoom(self):
         # reset all viewmodel variables to default
         self.scale = self.default_scale
         self.dx = 0
         self.dy = 0
+        self.clear_history()
 
     def set_scale(self, max_a):
         # automatically calculate and set the scale based on the largest semi-major axis in the array of entities;
@@ -80,6 +81,9 @@ class Simulation():
             new_scale = min(self.width, self.height) / (2 * max_a)
             self.scale = new_scale
             self.default_scale = new_scale
+
+    def clear_history(self):
+        self.histories = [[] for _ in range(len(self.solar_system.entities))]
 
     """
     Adding entities to simulation
@@ -143,20 +147,18 @@ class Simulation():
             elif event.key == pygame.K_DOWN:
                 self.scroll(dy=-30)
             elif event.key == pygame.K_MINUS:
-                self.zoom(0.667)
+                self.zoom(5/6)
             elif event.key == pygame.K_PLUS:
-                self.zoom(1.5)
+                self.zoom(1.2)
             elif event.key == pygame.K_r:
                 self.reset_zoom()
-            elif event.key == pygame.K_PERIOD:
-                self.change_sim_rate(2)
-            elif event.key == pygame.K_COMMA:
-                self.change_sim_rate(0.5)
             elif event.key == pygame.K_l:
                 self.show_labels = not self.show_labels
             elif event.key == pygame.K_h:
                 self.show_history = not self.show_history
-                self.histories = [[] for _ in range(len(self.solar_system.entities))]
+                self.clear_history()
+            elif event.key == pygame.K_t:
+                self.show_sim_space = not self.show_sim_space
             elif event.key == pygame.K_q:
                 self.running = False
                 pygame.quit()
@@ -240,6 +242,17 @@ class Simulation():
                     self.histories[i].append((x, y))
                     if len(self.histories[i]) > entity.a * 400:
                         self.histories[i] = self.histories[i][1:]
+
+            if self.show_sim_space:
+                relative_scale = self.scale / self.default_scale
+                x1 = int(relative_scale * ((self.scale * self.sim_space[0][0]) + self.dx) + self.offsetx)
+                y1 = int(relative_scale * ((self.scale * self.sim_space[0][1]) + self.dy) + self.offsety)
+                x2 = int(relative_scale * ((self.scale * self.sim_space[0][2]) + self.dx) + self.offsetx)
+                y2 = int(relative_scale * ((self.scale * self.sim_space[0][3]) + self.dy) + self.offsety)
+                c = (255, 0, 0)
+                pygame.draw.rect(self.window, c, (x1, y1, x2-x1, y2-y1), 1, 5)
+                text = 'Masses: ' + str(self.sim_space[1])
+                self.window.blit(font.render(text, False, c), (x1, y2 + 3))
 
             if self.show_labels:
                 for label in entity_labels:
