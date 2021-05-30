@@ -44,7 +44,6 @@ C = [abs(T[2] - T[0] + 1) // chunk_count_per_dim,
 N = C[1] * C[0] * len(M) * chunk_count // res
 # Number of samples per chunk
 N_C = C[1] * C[0] * len(M) // res
-# Output folder name
 
 #
 # FUNCTIONS
