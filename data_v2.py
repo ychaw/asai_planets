@@ -8,7 +8,6 @@ import csv
 import time
 import multiprocessing
 import os
-import math
 from sim import simulate_orbital_system
 
 #
@@ -85,7 +84,7 @@ if __name__ == '__main__':
 
     avg_sims_per_core = N / os.cpu_count()
     total_time = EST_SIM * max(avg_sims_per_core, 1)
-    chunk_size = math.gcd(os.cpu_count(), N)
+    chunk_size = int(N // os.cpu_count())
     print('********************************************************************************')
     print('ASAI PLANETS - SIMULATION')
     print('********************************************************************************')
