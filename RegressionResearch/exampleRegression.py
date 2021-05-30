@@ -1,3 +1,5 @@
+# OneNote with further information: https://hawhamburgde-my.sharepoint.com/:o:/g/personal/joseffa_steuernagel_haw-hamburg_de/Ek6hzA7c0ktCjPyQAAoxLhwBvw9r4ONEP8tcgwJBYmGDJw?e=JYx68c
+
 # Beispiel nach https://www.pluralsight.com/guides/regression-keras
 
 #----------Step 1:----------#
