@@ -94,7 +94,7 @@ class Simulation():
         position,
         mass,
         speed=0,
-        angle=0,
+        angle=None,
         diameter=1e-5,
         e=0,
         a=None,
@@ -112,6 +112,10 @@ class Simulation():
         if not a:
             x, y = position
             a = math.hypot(x, y)
+
+        # If the angle is None, calculate the angle perpendicular to the sun
+        if not angle:
+            angle = math.atan2(position[1], position[0]) + math.pi
 
         self.solar_system.add_entity(
             position=position,

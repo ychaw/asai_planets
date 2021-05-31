@@ -128,7 +128,7 @@ class Simulation():
         position,
         mass,
         speed=0,
-        angle=0
+        angle=None
     ):
         '''
         Parameters:
@@ -136,8 +136,11 @@ class Simulation():
             mass: measured in kg
             speed: magnitude of initial velocity measured in AU/day
             angle: angle of initial velocity given in rad
-            diameter: measured in AU
         '''
+
+        # If the angle is None, calculate the angle perpendicular to the sun
+        if not angle:
+            angle = math.atan2(position[1], position[0]) + math.pi
 
         self.solar_system.add_entity(
             position=position,
@@ -248,8 +251,8 @@ if __name__ == '__main__':
     custom_entity = {
         'position': (1, 0.5),
         'mass': 3e24,
-        'speed': 0.014,
-        'angle': 4
+        'speed': 0.01,
+        'angle': None
     }
     start = time.time()
 
