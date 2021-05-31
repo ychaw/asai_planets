@@ -45,6 +45,7 @@ python3 sim.py
 | `r`       | Reset zoom and position                            |
 | `l`       | Toggle labels on the entities                      |
 | `h`       | Toggle history paths on the entities               |
+| `t`       | Toggle simulation space visualization              |
 | `q`       | Quit the simulation                                |
 
 ## Inspiration
