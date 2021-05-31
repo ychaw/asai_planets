@@ -3,6 +3,9 @@
 ## TODO:
 - `keras-rl` / `keras` / `tensorflow.keras` installieren (noch nicht ganz sicher, welches wir benötigen)
 
+## kNN Research
+https://hawhamburgde-my.sharepoint.com/:o:/g/personal/joseffa_steuernagel_haw-hamburg_de/Ek6hzA7c0ktCjPyQAAoxLhwBvw9r4ONEP8tcgwJBYmGDJw?e=JYx68c
+
 ## Aktivierung der virtuellen Python Umgebung:
 Windows:
 ```
