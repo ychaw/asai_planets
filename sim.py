@@ -192,7 +192,7 @@ class Simulation():
             for i, planet_pos in enumerate(timestep):
                 planets[i].append(planet_pos)
 
-        diff = np_array(REFERENCE_SIM) - np_array(planets)
+        diff = abs(np_array(REFERENCE_SIM) - np_array(planets))
         return np_sum(diff)
 
 
@@ -233,8 +233,10 @@ def simulate_orbital_system(max_runs: int = 1000, collision_dist: float = 0.001,
     if not s.planet_collision:
         score = s.calc_stability()
 
+    print(score)
+
     # score comes in the range of 0 (best possible outcome) to inf (worst outcome)
-    # here we cap the score to a maximum value of 5
+    # here we cap the score to a maximum value of 5 and minimum 0
     score = max(0, min(score, stability_cutoff))
 
     # lerping score so that the minimum value (worst) is 0 and the maximum value (best) is 1
@@ -247,11 +249,11 @@ if __name__ == '__main__':
 
     max_runs = 1000
     collision_dist = 0.001
-    stability_cutoff = 3
+    stability_cutoff = 20
     custom_entity = {
-        'position': (1, 0.5),
+        'position': (0.8, 0.4),
         'mass': 3e24,
-        'speed': 0.01,
+        'speed': 0.015,
         'angle': None
     }
     start = time.time()

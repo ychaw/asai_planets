@@ -52,7 +52,7 @@ def main(runs):
 
     sim_space = (
         # x1, y1, x2, y2 of simulation space
-        [-0.4, -1.1, 0.4, -0.3],
+        [-0.4, 1.1, 0.4, 0.3],
         # masses that where trained
         [7e23, 5e25, 3e27]
     )
@@ -75,9 +75,9 @@ def main(runs):
     s.add_custom_entity(
         name='Custom',
         color=(255, 0, 0),
-        position=(1, 0.5),
+        position=(0.8, 0.4),
         mass=3e24,
-        speed=0.01,
+        speed=0.015,
         angle=None
     )
 
@@ -85,5 +85,4 @@ def main(runs):
 
 
 if __name__ == '__main__':
-
     main(1000)

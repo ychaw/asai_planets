@@ -9,6 +9,7 @@ import time
 import multiprocessing
 import os
 from sim import simulate_orbital_system
+from numpy import arange
 
 #
 # CONFIG
@@ -18,10 +19,10 @@ from sim import simulate_orbital_system
 OUT = os.path.join(os.path.abspath(os.getcwd()), 'output')
 
 # Total search space, rectangle with (x1, y1, x2, y2)
-T = [-0.4, -1.1, 0.4, -0.3]
+T = [-0.4, 1.1, 0.4, 0.3]
 
 # Step size, assumes the search space is a square
-step_size = 0.01
+step_size = 0.05
 
 # How many digits will be used for coordinates
 # Used to avoid floating point errors, because
@@ -35,8 +36,8 @@ M = [7e23, 5e25, 3e27]
 max_runs = 1000
 collision_dist = 0.001
 stability_cutoff = 3
-speed = 0.014
-angle = 4
+speed = 0.01
+angle = None
 
 
 # Estimate for one simulation run in seconds
@@ -45,13 +46,6 @@ EST_SIM = 2
 #
 # FUNCTIONS
 #
-
-
-# Stub for the sim function
-def sim_stub(x, y, m):
-    # Simulate longer runtimes
-    time.sleep(EST_SIM)
-    return x * y * m
 
 
 # Process one chunk identified by start and end values for x and y
@@ -72,6 +66,7 @@ def process(x, y, m):
 # SCRIPT
 #
 if __name__ == '__main__':
+    '''
     N_per_dim = int(step_size ** (-1))
     # Total number of samples
     N = N_per_dim ** 2 * len(M)
@@ -79,21 +74,29 @@ if __name__ == '__main__':
     # Values to sample the simulation at
     X = [(T[2] - T[0]) * (x * step_size) + T[0]
          for x in range(0, N_per_dim)]
+
     Y = [(T[3] - T[1]) * (y * step_size) + T[1]
          for y in range(0, N_per_dim)]
+    '''
+
+    X = list(arange(min(T[0], T[2]), max(T[0], T[2]) + step_size, step_size))
+    Y = list(arange(min(T[1], T[3]), max(T[1], T[3]) + step_size, step_size))
+
+    N = len(X) * len(Y) * len(M)
 
     avg_sims_per_core = N / os.cpu_count()
     total_time = EST_SIM * max(avg_sims_per_core, 1)
     chunk_size = int(N // os.cpu_count())
-    print('********************************************************************************')
+    
+    print('\n********************************************************************************')
     print('ASAI PLANETS - SIMULATION')
     print('********************************************************************************')
     print()
     print(f'Search space with coordinates: ({T[0]}, {T[1]}) ({T[2]}, {T[3]})')
-    print(f'Search space size: {T[2] - T[0]}x{T[3] - T[1]}')
+    print(f'Search space size: {len(X)} x {len(Y)}')
     print(f'Search space resolution: {step_size}')
-    print(f'Total number of samples: {N}')
     print(f'Testing masses: {M}')
+    print(f'Total number of samples: {N}')
     print()
     print(f'Using up to {os.cpu_count()} CPUs.')
     print(f'Chunk size: {chunk_size}')
@@ -101,8 +104,7 @@ if __name__ == '__main__':
     print()
     print(f'Estimated total time: {total_time}s')
     print()
-    print('********************************************************************************')
-    print()
+    print('********************************************************************************\n')
 
     ###########################################################################
     # Create data
@@ -121,8 +123,7 @@ if __name__ == '__main__':
         result = r.get()
 
     # Print some info about how long things took
-    finish_time = time.time()
-    elapsed = finish_time - start_time
+    elapsed = time.time() - start_time
     avg_time_per_sim = elapsed / N
 
     print('Done\n')
@@ -140,7 +141,6 @@ if __name__ == '__main__':
         for row in result:
             writer.writerow(row)
 
-    print()
-    print('********************************************************************************')
+    print('\n********************************************************************************')
     print(f'Wrote results to {file_name}')
-    print('********************************************************************************')
+    print('********************************************************************************\n')

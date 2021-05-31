@@ -250,9 +250,9 @@ class Simulation():
             if self.show_sim_space:
                 relative_scale = self.scale / self.default_scale
                 x1 = int(relative_scale * ((self.scale * self.sim_space[0][0]) + self.dx) + self.offsetx)
-                y1 = int(relative_scale * ((self.scale * self.sim_space[0][1]) + self.dy) + self.offsety)
+                y1 = int(relative_scale * ((self.scale * -self.sim_space[0][1]) + self.dy) + self.offsety)
                 x2 = int(relative_scale * ((self.scale * self.sim_space[0][2]) + self.dx) + self.offsetx)
-                y2 = int(relative_scale * ((self.scale * self.sim_space[0][3]) + self.dy) + self.offsety)
+                y2 = int(relative_scale * ((self.scale * -self.sim_space[0][3]) + self.dy) + self.offsety)
                 c = (255, 0, 0)
                 pygame.draw.rect(self.window, c, (x1, y1, x2-x1, y2-y1), 1, 5)
                 text = 'Masses: ' + str(self.sim_space[1])
