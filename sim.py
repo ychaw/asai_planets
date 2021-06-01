@@ -13,10 +13,7 @@ SIM_ENTITIES = [
         'position': (0, 0),
         'mass': 1.9884e30,
         'speed': 0,
-        'angle': 0,
-        'diameter': 9.309624485e-3,
-        'e': 0,
-        'a': 0
+        'angle': 0
     },
     {
         'name': 'Mercury',
@@ -24,10 +21,7 @@ SIM_ENTITIES = [
         'position': (0.3590961172798053, -0.04164522874752517),
         'mass': 3.285e23,
         'speed': 0.029287836754110234,
-        'angle': -3.2570492550785675,
-        'diameter': 3.26167744e-5,
-        'e': 0.2056214963443691,
-        'a': 0.3870993130750688
+        'angle': -3.2570492550785675
     },
     {
         'name': 'Venus',
@@ -35,10 +29,7 @@ SIM_ENTITIES = [
         'position': (0.5127350527183985, -0.5158182472028876),
         'mass': 4.867e24,
         'speed': 0.02008004590994939,
-        'angle': -3.9299884110350813,
-        'diameter': 8.0910243e-5,
-        'e': 0.006775865311086034,
-        'a': 0.7233300921935613
+        'angle': -3.9299884110350813
     },
     {
         'name': 'Earth',
@@ -46,10 +37,7 @@ SIM_ENTITIES = [
         'position': (0.97941231066402, 0.2024447197289333),
         'mass': 5.972e24 + 7.342e22,
         'speed': 0.017200221950579502,
-        'angle': -2.9377629737585336,
-        'diameter': 8.5175009e-5,
-        'e': 0.01667651824711395,
-        'a': 1.000011043814421
+        'angle': -2.9377629737585336
     },
 ]
 
@@ -149,7 +137,7 @@ class Simulation():
             mass=mass
         )
 
-    def get_planet_positions(self):
+    def get_planet_positions(self) -> list[tuple[float, float]]:
         # excluding custom planet
         return [(entity.x, entity.y) for entity in self.solar_system.entities[:-1]]
 
@@ -164,7 +152,7 @@ class Simulation():
                     self.running = False
                     return
 
-    def start(self):
+    def start(self) -> None:
         self.running = True
         run = 0
 
@@ -196,7 +184,7 @@ class Simulation():
         return np_sum(diff)
 
 
-def simulate_orbital_system(max_runs: int = 1000, collision_dist: float = 0.001, stability_cutoff: float = 3, custom_entity: dict = None):
+def simulate_orbital_system(max_runs: int = 1000, collision_dist: float = 0.001, stability_cutoff: float = 3, custom_entity: dict = None) -> float:
     '''
     Simulation of the inner four planets of our solar system (Sun, Mercury, Venus, Earth) with an optional added custom planet.
 
@@ -233,8 +221,6 @@ def simulate_orbital_system(max_runs: int = 1000, collision_dist: float = 0.001,
     if not s.planet_collision:
         score = s.calc_stability()
 
-    print(score)
-
     # score comes in the range of 0 (best possible outcome) to inf (worst outcome)
     # here we cap the score to a maximum value of 5 and minimum 0
     score = max(0, min(score, stability_cutoff))
@@ -249,10 +235,10 @@ if __name__ == '__main__':
 
     max_runs = 1000
     collision_dist = 0.001
-    stability_cutoff = 20
+    stability_cutoff = 15
     custom_entity = {
-        'position': (0.8, 0.4),
-        'mass': 3e24,
+        'position': (0.3, 1.0),
+        'mass': 3e27,
         'speed': 0.015,
         'angle': None
     }

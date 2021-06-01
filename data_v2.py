@@ -22,7 +22,7 @@ OUT = os.path.join(os.path.abspath(os.getcwd()), 'output')
 T = [-0.4, 1.1, 0.4, 0.3]
 
 # Step size, assumes the search space is a square
-step_size = 0.05
+step_size = 0.1
 
 # How many digits will be used for coordinates
 # Used to avoid floating point errors, because
@@ -35,8 +35,8 @@ M = [7e23, 5e25, 3e27]
 # Simulation specific
 max_runs = 1000
 collision_dist = 0.001
-stability_cutoff = 3
-speed = 0.01
+stability_cutoff = 15
+speed = 0.015
 angle = None
 
 

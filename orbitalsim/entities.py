@@ -1,13 +1,13 @@
 import math
-from astropy.constants import G
+from numba import jit, float64, byte
+from numba.types import UniTuple, unicode_type
+from numba.experimental import jitclass
 
-
-def add_vectors(vector1, vector2):
+@jit(nopython=True, nogil=True, signature_or_function=UniTuple(float64, 2)(float64, float64, float64, float64))
+def add_vectors(mag1, angle1, mag2, angle2):
     # vectors are quantities with a magnitude and direction
     # add them by connecting them end-to-end to form one resulting vector
     # add the x and y components together to get a right-angled triangle with hypotenuse of the resulting vector's magnitude
-    mag1, angle1 = vector1
-    mag2, angle2 = vector2
     x = mag1 * math.sin(angle1) + mag2 * math.sin(angle2)
     y = mag1 * math.cos(angle1) + mag2 * math.cos(angle2)
 
@@ -17,7 +17,7 @@ def add_vectors(vector1, vector2):
     # atan2 takes care of x = 0
     angle = (math.pi / 2) - math.atan2(y, x)
 
-    return (mag, angle)
+    return mag, angle
 
 
 """
@@ -25,26 +25,30 @@ Main entity class
 """
 
 
+spec = [
+    ('x', float64),
+    ('y', float64),
+    ('mass', float64),
+    ('speed', float64),
+    ('angle', float64),
+    ('name', unicode_type),
+    ('color', UniTuple(byte, 3)),
+]
+
+@jitclass(spec)
 class Entity():
-    def __init__(self, position, diameter, mass, e=0, a=1, name='', color=(255, 255, 255)):
+    def __init__(self, position, mass, speed, angle, name, color):
         # position: tuple (x, y) describing the distance in AU from the centre of the system (0, 0)
-        # diameter: measured in AU
         # mass: measured in kg
         # speed: magnitude of initial velocity measured in AU/day
         # angle: angle of initial velocity given in rad
-        # (if applicable) e: orbit eccentricity, 0-1
-        # (if applicable) a: semi-major axis measured in AU
         self.x, self.y = position
-        self.diameter = diameter
         self.mass = mass
-        self.density = self.mass / (4/3 * math.pi * (self.diameter/2)**3)
-        self.e = e
-        self.a = a
+        self.speed = speed
+        self.angle = angle
         self.color = color
         self.name = name
 
-        self.speed = 0
-        self.angle = 0
 
     """
     Physics calculations for movement
@@ -56,10 +60,14 @@ class Entity():
         self.x += math.sin(self.angle) * self.speed
         self.y -= math.cos(self.angle) * self.speed  # subtract because of pygame's coord system
 
-    def accelerate(self, acceleration):
+    
+    def accelerate(self, mag, angle):
         # combine apply acceleration to velocity vector
-        self.speed, self.angle = add_vectors((self.speed, self.angle), acceleration)
+        new = add_vectors(self.speed, self.angle, mag, angle)
+        self.speed = new[0]
+        self.angle = new[1]
 
+    
     def attract(self, other):
         dx = self.x - other.x
         dy = self.y - other.y
@@ -69,8 +77,8 @@ class Entity():
         # calculate attractive force due to gravity using Newton's law of universal gravitation:
         # F = G * m1 * m2 / r^2
         # for consistency, G = [AU^3 * kg^-1 * d^-2]
-        force = G.to('AU3 / (kg d2)').value * self.mass * other.mass / (distance ** 2)
+        # 1.4881851702345193e-34 = G.to('AU3 / (kg d2)').value
+        force = float64(1.4881851702345193e-34) * self.mass * other.mass / (distance ** 2)
 
         # accelerate both bodies towards each other by acceleration vector a = F/m, rearranged from Newton's second law
-        self.accelerate((force / self.mass, theta - (math.pi / 2)))
-        other.accelerate((force / other.mass, theta + (math.pi / 2)))
+        return force, theta

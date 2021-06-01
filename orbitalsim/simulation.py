@@ -95,9 +95,6 @@ class Simulation():
         mass,
         speed=0,
         angle=None,
-        diameter=1e-5,
-        e=0,
-        a=None,
         name='',
         color=(255, 255, 255),
     ):
@@ -105,13 +102,7 @@ class Simulation():
         # speed: magnitude of initial velocity measured in AU/day
         # angle: angle of initial velocity given in rad
         # mass: measured in kg
-        # diameter: measured in AU
-        # (if applicable) e: eccentricity of the entity's orbit ranging from 0-1
-        # (if applicable) a: semi-major axis of the entity's orbit measured in AU
         # (if applicable) name: str to display next to the entity when labels turned on
-        if not a:
-            x, y = position
-            a = math.hypot(x, y)
 
         # If the angle is None, calculate the angle perpendicular to the sun
         if not angle:
@@ -119,12 +110,9 @@ class Simulation():
 
         self.solar_system.add_entity(
             position=position,
+            mass=mass,
             speed=speed,
             angle=angle,
-            mass=mass,
-            diameter=diameter,
-            e=e,
-            a=a,
             name=name,
             color=color
         )
@@ -195,7 +183,7 @@ class Simulation():
         semimajor_axes = []
         for entity in self.solar_system.entities:
             self.histories.append([])
-            semimajor_axes.append(entity.a)
+            semimajor_axes.append(math.hypot(entity.x, entity.y))
         self.set_scale(max(semimajor_axes) + 0.2)
 
         font_dir = '{}/fonts/Inconsolata.ttf'.format(os.path.dirname(__file__))
@@ -217,7 +205,7 @@ class Simulation():
                 self.solar_system.update()
 
             # render frame
-            self.window.fill(self.solar_system.bg)
+            self.window.fill((0, 0, 0))
 
             if self.show_history:
                 for i, ent_history in enumerate(self.histories):
@@ -232,10 +220,9 @@ class Simulation():
                 x = int(relative_scale * ((self.scale * entity.x) + self.dx) + self.offsetx)
                 # reflected across y-axis to compensate for pygame's reversed axes
                 y = int(relative_scale * ((self.scale * -entity.y) + self.dy) + self.offsety)
-                r = abs(int(entity.diameter * self.scale * self.entity_scale / 2)) * 2
-
-                if r < 6:
-                    r = 6
+                r = 6
+                if entity.name == 'Sun':
+                    r *= 5
 
                 pygame.draw.circle(self.window, entity.color, (x, y), r, 0)
 
@@ -244,7 +231,7 @@ class Simulation():
 
                 if self.show_history and not self.paused:
                     self.histories[i].append((x, y))
-                    if len(self.histories[i]) > entity.a * 400:
+                    if len(self.histories[i]) > i * 150:
                         self.histories[i] = self.histories[i][1:]
 
             if self.show_sim_space:
@@ -263,8 +250,12 @@ class Simulation():
                     text, position = label
                     self.window.blit(text, position)
 
+            # Number of simulation steps
             c = (255, 0 if run > self.max_runs else 255, 0 if run > self.max_runs else 255)
             self.window.blit(font.render(str(run), False, c), (10, 10))
+
+            # Disclaimer
+            self.window.blit(font.render('not to scale', False, (180, 180, 180)), (self.width - 90, self.height - 20))
 
             pygame.display.flip()
 

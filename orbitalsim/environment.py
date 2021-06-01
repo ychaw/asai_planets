@@ -1,4 +1,7 @@
+from math import pi as math_pi
+
 from orbitalsim.entities import Entity
+
 
 
 class OrbitalSystem():
@@ -9,19 +12,14 @@ class OrbitalSystem():
 
     def add_entity(
         self,
-        diameter=8.5e-5,
-        mass=6e24,
         position=(0, 0),
+        mass=6e24,
         speed=0,
         angle=0,
-        e=0,
-        a=1,
         name='',
         color=(255, 255, 255)
     ):
-        entity = Entity(position, diameter, mass, e, a, name, color)
-        entity.speed = speed
-        entity.angle = angle
+        entity = Entity(position, mass, speed, angle, name, color)
 
         self.entities.append(entity)
 
@@ -30,4 +28,7 @@ class OrbitalSystem():
             entity.move()
 
             for entity2 in self.entities[i + 1:]:
-                entity.attract(entity2)
+                force, theta = entity.attract(entity2)
+
+                entity.accelerate(force / entity.mass, theta - (math_pi / 2))
+                entity2.accelerate(force / entity2.mass, theta + (math_pi / 2))
