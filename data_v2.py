@@ -27,7 +27,7 @@ step_size = 0.1
 # How many digits will be used for coordinates
 # Used to avoid floating point errors, because
 # that would increase the size of the data set
-precision = 15
+precision = 14
 
 # Set of masses to test
 M = [7e23, 5e25, 3e27]
