@@ -237,8 +237,8 @@ if __name__ == '__main__':
     collision_dist = 0.001
     stability_cutoff = 15
     custom_entity = {
-        'position': (0.3, 1.0),
-        'mass': 3e27,
+        'position': (-0.395, 0.305),
+        'mass': 7e25,
         'speed': 0.015,
         'angle': None
     }
