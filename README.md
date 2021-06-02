@@ -1,4 +1,7 @@
 # Planetensimulation mit Reinforced Learning
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/44225863/120490838-07133f00-c3b9-11eb-9352-a7df5f518b6d.png" alt="1442401" width="60%" height="60%">
+</p>
 
 ## TODO:
 - `keras-rl` / `keras` / `tensorflow.keras` installieren (noch nicht ganz sicher, welches wir benötigen)
