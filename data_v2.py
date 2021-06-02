@@ -5,11 +5,14 @@
 #
 
 import csv
-import time
 import multiprocessing
 import os
-from sim import simulate_orbital_system
+import time
+
+from cpuinfo import get_cpu_info
 from numpy import arange
+
+from sim_v2 import simulate_orbital_system
 
 #
 # CONFIG
@@ -19,10 +22,11 @@ from numpy import arange
 OUT = os.path.join(os.path.abspath(os.getcwd()), 'output')
 
 # Total search space, rectangle with (x1, y1, x2, y2)
-T = [-0.4, 1.1, 0.4, 0.3]
+# T = [-0.4, 1.1, 0.4, 0.3]
+T = [-1.5, 1.5, 1.5, -1.5]
 
 # Step size, assumes the search space is a square
-step_size = 0.1
+step_size = 0.01
 
 # How many digits will be used for coordinates
 # Used to avoid floating point errors, because
@@ -30,7 +34,7 @@ step_size = 0.1
 precision = 14
 
 # Set of masses to test
-M = [7e23, 5e25, 3e27]
+M = [1e26, 1e27, 1e28]
 
 # Simulation specific
 max_runs = 1000
@@ -40,8 +44,8 @@ speed = 0.015
 angle = None
 
 
-# Estimate for one simulation run in seconds
-EST_SIM = 2
+# Estimate for one simulation run per core per ghz
+EST_SIM = 4.150119662004526e-05
 
 #
 # FUNCTIONS
@@ -59,35 +63,26 @@ def process(x, y, m):
                                                  'mass': m,
                                                  'speed': speed,
                                                  'angle': angle
-                                             })]
+                                             }, False)]
 
 
 #
 # SCRIPT
 #
 if __name__ == '__main__':
-    '''
-    N_per_dim = int(step_size ** (-1))
-    # Total number of samples
-    N = N_per_dim ** 2 * len(M)
-
-    # Values to sample the simulation at
-    X = [(T[2] - T[0]) * (x * step_size) + T[0]
-         for x in range(0, N_per_dim)]
-
-    Y = [(T[3] - T[1]) * (y * step_size) + T[1]
-         for y in range(0, N_per_dim)]
-    '''
 
     X = list(arange(min(T[0], T[2]), max(T[0], T[2]) + step_size, step_size))
     Y = list(arange(min(T[1], T[3]), max(T[1], T[3]) + step_size, step_size))
 
     N = len(X) * len(Y) * len(M)
 
-    avg_sims_per_core = N / os.cpu_count()
-    total_time = EST_SIM * max(avg_sims_per_core, 1)
-    chunk_size = int(N // os.cpu_count())
-    
+    ghz = get_cpu_info()['hz_actual'][0] / 1e9
+    cpus = os.cpu_count()
+    total_time = round(EST_SIM * cpus * ghz * N + 3, 3)
+
+    avg_sims_per_core = N / cpus
+    chunk_size = int(N // cpus)
+
     print('\n********************************************************************************')
     print('ASAI PLANETS - SIMULATION')
     print('********************************************************************************')
@@ -125,10 +120,12 @@ if __name__ == '__main__':
     # Print some info about how long things took
     elapsed = time.time() - start_time
     avg_time_per_sim = elapsed / N
+    avg_time_per_sim_per_core_per_ghz = avg_time_per_sim / cpus / ghz
 
     print('Done\n')
     print(f'Avg. time per sim: {avg_time_per_sim}s')
-    print(f'Finished in {elapsed}s')
+    print(f'Avg. time per sim per core per ghz: {avg_time_per_sim_per_core_per_ghz}s')
+    print(f'\nFinished in {elapsed:.3}s')
 
     ###########################################################################
     # Write data

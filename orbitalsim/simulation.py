@@ -1,10 +1,8 @@
-import pygame
 import math
-import sys
 import os
-import datetime
-from astroquery.jplhorizons import Horizons
-from astropy.time import Time
+import sys
+
+import pygame
 
 from orbitalsim.environment import OrbitalSystem
 

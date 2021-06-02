@@ -31,4 +31,5 @@ class OrbitalSystem():
                 force, theta = entity.attract(entity2)
 
                 entity.accelerate(force / entity.mass, theta - (math_pi / 2))
+                
                 entity2.accelerate(force / entity2.mass, theta + (math_pi / 2))
