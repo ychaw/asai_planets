@@ -60,8 +60,8 @@ def main(runs):
     s.add_custom_entity(
         name='Custom',
         color=(255, 0, 0),
-        position=(-0.395, 0.305),
-        mass=7e25,
+        position=(0.6, -0.45),
+        mass=3e27,
         speed=0.015,
         angle=None
     )

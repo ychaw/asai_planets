@@ -57,12 +57,12 @@ REFERENCE_SIM = [
 ]
 
 
-@jit(nopython=True, nogil=True, signature_or_function=UniTuple(float64, 2)(UniTuple(float64, 2), float64, float64))
+@jit(nopython=True, signature_or_function=UniTuple(float64, 2)(UniTuple(float64, 2), float64, float64))
 def move(positions: tuple[float, float], angle: float, speed: float) -> tuple[float, float]:
     return positions[0] + math.sin(angle) * speed, positions[1] - math.cos(angle) * speed
 
 
-@jit(nopython=True, nogil=True, signature_or_function=UniTuple(float64, 2)(UniTuple(float64, 2), UniTuple(float64, 2), float64, float64))
+@jit(nopython=True, signature_or_function=UniTuple(float64, 2)(UniTuple(float64, 2), UniTuple(float64, 2), float64, float64))
 def attract(pos1: tuple[float, float], pos2: tuple[float, float], mass1: float, mass2: float) -> tuple[float, float]:
     dx = pos1[0] - pos2[0]
     dy = pos1[1] - pos2[1]
@@ -74,7 +74,7 @@ def attract(pos1: tuple[float, float], pos2: tuple[float, float], mass1: float, 
     return force, theta
 
 
-@jit(nopython=True, nogil=True, signature_or_function=UniTuple(float64, 2)(float64, float64, float64, float64))
+@jit(nopython=True, signature_or_function=UniTuple(float64, 2)(float64, float64, float64, float64))
 def add_vectors(speed1: float, angle1: float, speed2: float, angle2: float) -> tuple[float, float]:
     x = speed1 * math.sin(angle1) + speed2 * math.sin(angle2)
     y = speed1 * math.cos(angle1) + speed2 * math.cos(angle2)
@@ -83,7 +83,6 @@ def add_vectors(speed1: float, angle1: float, speed2: float, angle2: float) -> t
     return speed, angle
 
 
-# @jit(nopython=True, nogil=True)
 def planets_did_collide(positions: list[tuple[float, float]], collision_dist: float) -> bool:
     for i, a in enumerate(positions):
         for b in positions[i+1:]:
@@ -92,14 +91,10 @@ def planets_did_collide(positions: list[tuple[float, float]], collision_dist: fl
                 return True
     return False
 
-# @jit(nopython=True, nogil=True)
-
 
 def calc_stability(planet_history: list[list[tuple[float, float]]]) -> float:
     diff = np_abs(np_array(REFERENCE_SIM) - np_array(planet_history))
     return np_sum(diff)
-
-# @jit(nopython=True, nogil=True)
 
 
 def simulate_orbital_system(max_runs: int = 1000, collision_dist: float = 0.001, stability_cutoff: float = 3, custom_entity: dict = None, check_for_collisions: bool = True) -> float:
@@ -190,11 +185,11 @@ def simulate_orbital_system(max_runs: int = 1000, collision_dist: float = 0.001,
         score = calc_stability(planet_history)
 
     # score comes in the range of 0 (best possible outcome) to inf (worst outcome)
-    # here we cap the score to a maximum value of 5 and minimum 0
+    # here we cap the score to a maximum value of stability_cutoff and minimum 0
     score = max(0, min(score, stability_cutoff))
 
     # lerping score so that the minimum value (worst) is 0 and the maximum value (best) is 1
-    score = score / stability_cutoff * -1 + 1
+    score = (score / stability_cutoff) * -1 + 1
 
     return score
 
