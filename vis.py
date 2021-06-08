@@ -40,9 +40,9 @@ def main(runs):
 
     sim_space = (
         # x1, y1, x2, y2 of simulation space
-        [-0.4, 1.1, 0.4, 0.3],
+        [-1.5, 1.5, 1.5, -1.5],
         # masses that where trained
-        [7e23, 5e25, 3e27]
+        [3e27]
     )
 
     s = simulation.Simulation(dimensions=(1000, 1000), max_runs=runs, sim_space=sim_space)

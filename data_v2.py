@@ -32,11 +32,11 @@ OUT = os.path.join(os.path.abspath(os.getcwd()), 'output')
 T = [-1.2, 1.2, 1.2, -1.2]
 
 # How many samples per axis should be calculated
-resolution_per_axis = 40
+resolution_per_axis = 100
 
 # Set of masses to test
-M = [1e26, 1e27, 1e28]
-M = [3e27]
+M = [1e28, 1e29, 1e30]
+# M = [3e27]
 
 # Simulation specific
 max_runs = 1000

@@ -11,7 +11,7 @@ from numpy import interp
 
 
 class Visualization():
-    def __init__(self, filename, selected_mass=0, zoom=1):
+    def __init__(self, filename, selected_mass=2, zoom=5):
 
         self.zoom = zoom
         self.running = True
@@ -19,7 +19,10 @@ class Visualization():
         self.data_path = os.path.join(os.path.abspath(os.getcwd()), 'output')
         self.data = pd.read_csv(os.path.join(self.data_path, filename), names=['x', 'y', 'm', 'score'], delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 
-        self.data = self.data[self.data['m'] == list(set(self.data['m']))[selected_mass]]
+        mass = list(sorted(set(self.data['m'])))[selected_mass]
+        print(mass)
+
+        self.data = self.data[self.data['m'] == mass]
 
         self.width = int(sqrt(self.data.shape[0])) * self.zoom
         self.height = self.width
@@ -38,13 +41,13 @@ class Visualization():
 
         for i in range(self.data.shape[0]):
 
-            # normal linear scale
+            # linear scale
             score = self.data.iat[i, 3]
 
-            # lerping to a logarithmic scale
+            # logarithmic scale
             # score = log((self.data.iat[i, 3]+1), 2)
 
-            # Black and white
+            # Grey color spectrum
             c = [interp(score, [0, 1], [0, 255]) for _ in range(3)]
 
             # HSV color spectrum
@@ -73,5 +76,5 @@ class Visualization():
 
 
 if __name__ == '__main__':
-    v = Visualization(filename='X[-1.5, 1.5]__Y[1.5, -1.5]__M[3e+27]__N[1442401].csv')
+    v = Visualization(filename='X[-1.2, 1.2]__Y[1.2, -1.2]__M[1e+28, 1e+29, 1e+30]__N[30000].csv')
     v.start()
