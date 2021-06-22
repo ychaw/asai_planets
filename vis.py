@@ -56,7 +56,7 @@ def main(runs):
             name=ent['name'],
             color=ent['color']
         )
-
+    '''
     s.add_custom_entity(
         name='Custom',
         color=(255, 0, 0),
@@ -65,7 +65,7 @@ def main(runs):
         speed=0.015,
         angle=None
     )
-
+    '''
     s.start()
 
 

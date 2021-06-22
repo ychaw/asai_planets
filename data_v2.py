@@ -23,20 +23,15 @@ from sim_v2 import simulate_orbital_system
 OUT = os.path.join(os.path.abspath(os.getcwd()), 'output')
 
 # Total search space, rectangle with (x1, y1, x2, y2) (top-left, bottom-right)
-
-# zoomed on the lower right quadrant
-# T = [0.4, -0.25, 0.8, -0.65]
-# T = [0.55, -0.4, 0.65, -0.5] # more zoooom
-
-# T = [-1.5, 1.5, 1.5, -1.5]
-T = [-1.2, 1.2, 1.2, -1.2]
+# T = [0.4, -0.25, 0.8, -0.65] # zoomed on the lower right quadrant
+T = [0.55, -0.4, 0.65, -0.5] # more zoooom
+# T = [-1.2, 1.2, 1.2, -1.2]
 
 # How many samples per axis should be calculated
-resolution_per_axis = 100
+resolution_per_axis = 200
 
 # Set of masses to test
 M = [1e28, 1e29, 1e30]
-# M = [3e27]
 
 # Simulation specific
 max_runs = 1000
