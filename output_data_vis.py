@@ -9,7 +9,7 @@ import numpy as np
 from PIL import Image
 
 
-selected_file = 3
+selected_file = 0
 
 
 renders_path = os.path.join(os.path.abspath(os.getcwd()), 'renders', 'simulation_data')

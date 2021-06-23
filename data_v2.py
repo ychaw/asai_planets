@@ -24,25 +24,29 @@ OUT = os.path.join(os.path.abspath(os.getcwd()), 'output')
 
 # Total search space, rectangle with (x1, y1, x2, y2) (top-left, bottom-right)
 # T = [0.4, -0.25, 0.8, -0.65] # zoomed on the lower right quadrant
-T = [0.55, -0.4, 0.65, -0.5] # more zoooom
-# T = [-1.2, 1.2, 1.2, -1.2]
+# T = [0.55, -0.4, 0.65, -0.5] # more zoooom
+T = [-1, 1, 1, -1]
 
 # How many samples per axis should be calculated
 resolution_per_axis = 200
 
 # Set of masses to test
-M = [1e28, 1e29, 1e30]
+M = [5e26, 1e27, 5e27, 1e28, 5e28]
 
 # Simulation specific
 max_runs = 1000
 collision_dist = 0.001
-stability_cutoff = 200  # 15
+stability_cutoff = 15  # 15
 speed = 0.015
 angle = None
 
 
 # Estimate for one simulation run per core per ghz
 EST_SIM = 4.150119662004526e-05
+
+
+# a bit hacky
+_, reference_sim = simulate_orbital_system(max_runs, collision_dist, stability_cutoff, None, None, True, True)
 
 #
 # FUNCTIONS
@@ -58,14 +62,16 @@ def process(x, y, m):
             max_runs,
             collision_dist,
             stability_cutoff,
+            reference_sim,
             {
                 'position': (x, y),
                 'mass': m,
                 'speed': speed,
                 'angle': angle
             },
-            False  # True
-        )
+            True,
+            False
+        )[0]
     ]
 
 

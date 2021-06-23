@@ -36,16 +36,9 @@ SIM_ENTITIES = [
 ]
 
 
-def main(runs):
+def start_visualization(runs, sim_space, custom_entity):
 
-    sim_space = (
-        # x1, y1, x2, y2 of simulation space
-        [-1.5, 1.5, 1.5, -1.5],
-        # masses that where trained
-        [3e27]
-    )
-
-    s = simulation.Simulation(dimensions=(1000, 1000), max_runs=runs, sim_space=sim_space)
+    s = simulation.Simulation(dimensions=(1000, 1000), max_runs=runs, sim_space=sim_space, custom_entity=custom_entity)
 
     for ent in SIM_ENTITIES:
         s.add_custom_entity(
@@ -56,18 +49,33 @@ def main(runs):
             name=ent['name'],
             color=ent['color']
         )
-    '''
-    s.add_custom_entity(
-        name='Custom',
-        color=(255, 0, 0),
-        position=(0.6, -0.45),
-        mass=3e27,
-        speed=0.015,
-        angle=None
-    )
-    '''
+
+    if custom_entity is not None:
+        s.add_custom_entity(
+            position=custom_entity['position'],
+            mass=custom_entity['mass'],
+            speed=custom_entity['speed'],
+            angle=custom_entity['angle'],
+            name=custom_entity['name'],
+            color=custom_entity['color']
+        )
+
     s.start()
 
 
 if __name__ == '__main__':
-    main(1000)
+    
+    # x1, y1, x2, y2 of simulation space
+    sim_space = [-1.5, 1.5, 1.5, -1.5]
+
+    custom_entity = {
+        'name': 'Custom',
+        'color': (255, 0, 0),
+        'position': (0.12140175219023774, -0.8197747183979975),
+        'mass': 5e26,
+        'speed': 0.015,
+        'angle': None,
+        'score': None
+    }
+
+    start_visualization(1000, sim_space, custom_entity)

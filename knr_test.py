@@ -12,12 +12,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsRegressor
 
 
-
 def main(neighbors):
 
     columns = ['x', 'y', 'm', 'score']
 
-    selected_file = 3
+    selected_file = 0
     render_scale = 4
 
     renders_path = os.path.join(os.path.abspath(os.getcwd()), 'renders', 'prediction_data')
@@ -30,14 +29,14 @@ def main(neighbors):
     data = pd.read_csv(os.path.join(data_path, filename), names=columns, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 
     # extracting used parameters
-    T = [data['x'].min(), data['x'].max(), data['y'].max(), data['y'].min()]
+    T = [data['x'].min(), data['y'].max(), data['x'].max(), data['y'].min()]
     M = data['m'].unique()
     N = data.shape[0]
     resolution_per_axis = int(sqrt(N // len(M)) * render_scale)
 
     # constructing new data with better resolution
-    X = np.linspace(T[0], T[1], resolution_per_axis)
-    Y = np.linspace(T[2], T[3], resolution_per_axis)
+    X = np.linspace(T[0], T[2], resolution_per_axis)
+    Y = np.linspace(T[1], T[3], resolution_per_axis)
     args = []
 
     # removing mass from everything if only one is present
@@ -54,7 +53,7 @@ def main(neighbors):
     X = data[columns[:-1]].to_numpy()
     y = data[columns[-1]].to_numpy()
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.33)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.2, random_state=1)
 
     knr = KNeighborsRegressor(n_neighbors=neighbors, weights='distance', n_jobs=-1)
     knr.fit(X_train, y_train)
@@ -63,7 +62,7 @@ def main(neighbors):
     print('Mean squared error: ' + str(mean_squared_error(y_test, y_pred)))
     print('Score: ' + str(knr.score(X_test, y_test)))
 
-
+    
 
     pred_data = np.array(knr.predict(args))
 
@@ -80,6 +79,7 @@ def main(neighbors):
         im.save(os.path.join(renders_path, new_filename))
 
         print('Exported predicted image to: ' + os.path.join(renders_path, new_filename))
+    
     
 
 

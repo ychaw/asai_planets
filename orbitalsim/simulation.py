@@ -1,6 +1,7 @@
 import math
 import os
 import sys
+from numpy.ma import masked_singleton
 
 import pygame
 
@@ -15,7 +16,8 @@ class Simulation():
         entity_scale=10,
         fullscreen=False,
         max_runs=1000,
-        sim_space=None
+        sim_space=None,
+        custom_entity=None
     ):
         # dimensions: (width, height) of the window in pixels
         # scale: magnification ratio between AU and displayed pixels (default of -1: automatically calculated by self.set_scale())
@@ -46,6 +48,7 @@ class Simulation():
         self.max_runs = max_runs
 
         self.sim_space = sim_space
+        self.custom_entity = custom_entity
 
         self.histories = []
 
@@ -234,14 +237,23 @@ class Simulation():
 
             if self.show_sim_space:
                 relative_scale = self.scale / self.default_scale
-                x1 = int(relative_scale * ((self.scale * self.sim_space[0][0]) + self.dx) + self.offsetx)
-                y1 = int(relative_scale * ((self.scale * -self.sim_space[0][1]) + self.dy) + self.offsety)
-                x2 = int(relative_scale * ((self.scale * self.sim_space[0][2]) + self.dx) + self.offsetx)
-                y2 = int(relative_scale * ((self.scale * -self.sim_space[0][3]) + self.dy) + self.offsety)
+                x1 = int(relative_scale * ((self.scale * self.sim_space[0]) + self.dx) + self.offsetx)
+                y1 = int(relative_scale * ((self.scale * -self.sim_space[1]) + self.dy) + self.offsety)
+                x2 = int(relative_scale * ((self.scale * self.sim_space[2]) + self.dx) + self.offsetx)
+                y2 = int(relative_scale * ((self.scale * -self.sim_space[3]) + self.dy) + self.offsety)
                 c = (255, 0, 0)
                 pygame.draw.rect(self.window, c, (x1, y1, x2-x1, y2-y1), 1, 5)
-                text = 'Masses: ' + str(self.sim_space[1])
-                self.window.blit(font.render(text, False, c), (x1, y2 + 3))
+
+                text = 'Position: {}'.format(self.custom_entity['position'])
+                self.window.blit(font.render(text, False, c), (x1, y2 + 0 * 15 + 3))
+                text = 'Mass:     {}'.format(self.custom_entity['mass'])
+                self.window.blit(font.render(text, False, c), (x1, y2 + 1 * 15 + 3))
+                text = 'Speed:    {}'.format(self.custom_entity['speed'])
+                self.window.blit(font.render(text, False, c), (x1, y2 + 2 * 15 + 3))
+                text = 'Angle:    {}'.format(self.custom_entity['angle'])
+                self.window.blit(font.render(text, False, c), (x1, y2 + 3 * 15 + 3))
+                text = 'Score:    {}'.format(self.custom_entity['score'])
+                self.window.blit(font.render(text, False, c), (x1, y2 + 4 * 15 + 3))
 
             if self.show_labels:
                 for label in entity_labels:
@@ -258,6 +270,9 @@ class Simulation():
             pygame.display.flip()
 
             run += 1 if not self.paused else 0
+
+            if run == 1001:
+                self.paused = True 
 
             # delta_t hat zwar in der Simulation keine Auswirkung (mehr), ist aber gut für die Visualisierung
             clock.tick(60)
