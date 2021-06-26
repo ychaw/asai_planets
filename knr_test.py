@@ -37,16 +37,7 @@ def main(neighbors):
     # constructing new data with better resolution
     X = np.linspace(T[0], T[2], resolution_per_axis)
     Y = np.linspace(T[1], T[3], resolution_per_axis)
-    args = []
-
-    # removing mass from everything if only one is present
-    if len(M) == 1:
-        columns.remove('m')
-        data.drop(columns=['m'], inplace=True)
-        args = [[x, y] for y in Y for x in X]
-    else:
-        args = [[x, y, m] for m in M for y in Y for x in X]
-
+    args = [[x, y, m] for m in M for y in Y for x in X]
     del X, Y
 
     # Splitting into training and test data
