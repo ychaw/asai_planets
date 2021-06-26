@@ -54,8 +54,7 @@ def attract(pos1: tuple[float, float], pos2: tuple[float, float], mass1: float, 
     dy = pos1[1] - pos2[1]
     theta = math.atan2(dy, dx)
     distance = math.hypot(dx, dy)
-    if distance == 0:
-        distance = 0.000000000001
+    distance = 1e-12 if distance == 0 else distance
     force = 1.4881851702345193e-34 * mass1 * mass2 / (distance ** 2)
     return force, theta
 
@@ -194,7 +193,7 @@ if __name__ == '__main__':
     collision_dist = 0.001
     stability_cutoff = 15
     custom_entity = {
-        'position': (0.12140175219023774, -0.8197747183979975),
+        'position': (0.8698372966207759, 0.9649561952440551),
         'mass': 5e26,
         'speed': 0.015,
         'angle': None

@@ -1,7 +1,6 @@
 import math
 import os
 import sys
-from numpy.ma import masked_singleton
 
 import pygame
 
