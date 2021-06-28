@@ -72,7 +72,7 @@ if __name__ == '__main__':
         'name': 'Custom',
         'color': (255, 0, 0),
         'position': (0.12140175219023774, -0.8197747183979975),
-        'mass': 5e26,
+        'mass': 5e27,
         'speed': 0.015,
         'angle': None,
         'score': None

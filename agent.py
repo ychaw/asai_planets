@@ -2,7 +2,7 @@ import csv
 import math
 import os
 from math import sqrt
-from random import choice
+from random import choice as rnd_choice
 
 import numpy as np
 import pandas as pd
@@ -62,29 +62,45 @@ if __name__ == '__main__':
 
     file = 0
     neighbours = 9
-    scale = 4
+    scale = 2
+
+    stable = True
 
     T, M, R = start_agent(neighbours, file, scale)
 
     # x1, y1, x2, y2 of simulation space
     sim_space = [T[0], T[1], T[2], T[3]]
 
-    if R[0][1] > 0.9:
-        best = choice(R[:[x[1] > 0.98 for x in R].index(False)])
-    else:
-        best = R[0]
+    print('**********************************************************************\n')
+    print(f'Minimum Score: {R[-1][1]}')
+    print(f'Maximum Score: {R[0][1]}\n')
 
-    print(best)
+
+    if stable:
+
+        if R[0][1] > 0.98:
+            choice = rnd_choice(R[:[x[1] > 0.98 for x in R].index(False)])
+        else:
+            choice = R[0]
+    
+    else:
+
+        if R[-1][1] < 0.7:
+            choice = rnd_choice(R[[x[1] < 0.7 for x in R].index(True):])
+        else:
+            choice = R[-1]
+
+    print(choice)
     print()
 
     custom_entity = {
-        'name': 'Custom',
+        'name': 'Agent',
         'color': (255, 0, 0),
-        'position': tuple(best[0][:2]),
-        'mass': best[0][-1],
+        'position': tuple(choice[0][:2]),
+        'mass': choice[0][-1],
         'speed': 0.015,
-        'angle': math.atan2(best[0][:2][1], best[0][:2][0]) + math.pi,
-        'score': best[1]
+        'angle': math.atan2(choice[0][:2][1], choice[0][:2][0]) + math.pi,
+        'score': choice[1]
     }
 
     start_visualization(1000, sim_space, custom_entity)

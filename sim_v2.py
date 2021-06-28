@@ -194,7 +194,7 @@ if __name__ == '__main__':
     stability_cutoff = 15
     custom_entity = {
         'position': (0.8698372966207759, 0.9649561952440551),
-        'mass': 5e26,
+        'mass': 5e27,
         'speed': 0.015,
         'angle': None
     }
